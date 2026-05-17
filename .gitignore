@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Environment variables - NEVER commit these
+backend/.env
+.env
+.env.local
+.env.production
+
+# Build outputs
+frontend/.next/
+frontend/out/
+frontend/build/
+
+# Uploaded files (stored on server disk, not in git)
+backend/uploads/
+
+# Debug files
+backend/debugGemini.js
+backend/testGemini.js
+backend/checkFaculty.js
+backend/createFaculty.js
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor
+.vscode/
+*.swp
