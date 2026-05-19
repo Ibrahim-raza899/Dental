@@ -34,6 +34,34 @@ app.use(express.json());
 // Serve uploaded files statically (for student PDF/DOCX downloads)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+import User from './models/User.js';
+
+// Temporary route to hardpush users
+app.get('/api/hardpush', async (req, res) => {
+  try {
+    const users = [
+      { name: 'Ibrahim (Student)', email: 'ibrahimraza899@gmail.com', password: 'Ibrahim_104', role: 'student', isVerified: true },
+      { name: 'Ibrahim (Faculty)', email: 'ibrahimraza3135@gmail.com', password: 'Ibrahim_104', role: 'faculty', isVerified: true }
+    ];
+    let results = [];
+    for (const u of users) {
+      const exists = await User.findOne({ email: u.email });
+      if (exists) {
+        exists.isVerified = true;
+        exists.password = u.password;
+        await exists.save();
+        results.push(`Updated ${u.email}`);
+      } else {
+        await User.create(u);
+        results.push(`Created ${u.email}`);
+      }
+    }
+    res.json({ message: "Hardpush successful!", results });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/chapters', chapterRoutes);
