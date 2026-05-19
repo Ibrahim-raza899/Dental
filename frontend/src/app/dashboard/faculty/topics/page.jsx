@@ -166,7 +166,7 @@ export default function ManageTopics() {
                       <p className="text-xs text-slate-500 uppercase">{topic.fileType || 'file'}</p>
                     </div>
                     <a 
-                      href={`http://localhost:5000${topic.fileUrl}`} 
+                      href={`${process.env.NEXT_PUBLIC_API_URL ? process.env.NEXT_PUBLIC_API_URL.replace('/api', '') : 'http://localhost:5000'}${topic.fileUrl}`} 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="flex items-center gap-1 text-xs font-semibold text-purple-400 hover:text-purple-300 bg-purple-500/10 px-3 py-1.5 rounded-lg"

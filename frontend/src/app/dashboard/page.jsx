@@ -7,17 +7,20 @@ import Link from 'next/link';
 export default function DashboardPage() {
   const [chapters, setChapters] = useState([]);
   const [progress, setProgress] = useState([]);
+  const [testResults, setTestResults] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [chaptersRes, progressRes] = await Promise.all([
+        const [chaptersRes, progressRes, resultsRes] = await Promise.all([
           api.get('/chapters'),
-          api.get('/progress')
+          api.get('/progress'),
+          api.get('/tests/my-results')
         ]);
         setChapters(chaptersRes.data);
         setProgress(progressRes.data || []);
+        setTestResults(resultsRes.data || []);
       } catch (err) {
         console.error('Failed to load dashboard data:', err);
       } finally {
@@ -29,7 +32,7 @@ export default function DashboardPage() {
 
   const chaptersRead = progress.filter(p => p.read).length;
   const totalChapters = chapters.length;
-  const testsTaken = progress.filter(p => p.testId).length;
+  const testsTaken = testResults.length;
 
   // Find the first unread chapter to suggest as "Continue Reading"
   const readIds = new Set(progress.filter(p => p.read).map(p => p.chapterId));

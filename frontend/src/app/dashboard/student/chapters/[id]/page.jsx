@@ -165,7 +165,7 @@ export default function ChapterDetails({ params }) {
                   <div className="flex flex-col sm:flex-row gap-2">
                     {/* Direct download of original file */}
                     <a 
-                      href={`http://localhost:5000${topic.fileUrl}`} 
+                      href={`${process.env.NEXT_PUBLIC_API_URL ? process.env.NEXT_PUBLIC_API_URL.replace('/api', '') : 'http://localhost:5000'}${topic.fileUrl}`} 
                       download={topic.fileName}
                       target="_blank" 
                       rel="noopener noreferrer"

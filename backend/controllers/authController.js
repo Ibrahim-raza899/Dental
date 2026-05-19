@@ -16,6 +16,10 @@ export const registerUser = async (req, res) => {
       return res.status(400).json({ message: 'User already exists' });
     }
 
+    if (role === 'faculty' && demoSecret !== 'odontogenic_demo_123') {
+      return res.status(403).json({ message: 'Faculty registration is restricted. Please contact administration to create a faculty account.' });
+    }
+
     let finalRole = 'student';
     let isVerified = false;
 

@@ -8,7 +8,6 @@ import { GraduationCap, BookOpen, Eye, EyeOff, ArrowRight, Sparkles, UserPlus, C
 import Link from 'next/link';
 
 export default function RegisterPage() {
-  const [activeRole, setActiveRole] = useState('student');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -60,7 +59,7 @@ export default function RegisterPage() {
         name: name.trim(), 
         email: email.trim().toLowerCase(), 
         password, 
-        role: activeRole 
+        role: 'student' 
       });
 
       if (registerRes.data.token) {
@@ -69,11 +68,7 @@ export default function RegisterPage() {
         localStorage.setItem('user', JSON.stringify(registerRes.data));
         dispatch(loginSuccess({ user: registerRes.data, token: registerRes.data.token }));
 
-        if (registerRes.data.role === 'faculty') {
-          router.push('/dashboard/faculty');
-        } else {
-          router.push('/dashboard');
-        }
+        router.push('/dashboard');
       } else {
         // Standard user needs to verify email
         router.push(`/verify?email=${encodeURIComponent(email.trim().toLowerCase())}`);
@@ -102,42 +97,9 @@ export default function RegisterPage() {
           <p className="text-slate-400 text-sm">Join the pathology learning platform</p>
         </div>
         
-        {/* Role Toggle */}
-        <div className="flex gap-1 mb-6 p-1 bg-slate-800/80 rounded-xl">
-          <button
-            type="button"
-            onClick={() => setActiveRole('student')}
-            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-semibold transition-all ${
-              activeRole === 'student' 
-                ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30' 
-                : 'text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            <GraduationCap className="w-4 h-4" /> Student
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveRole('faculty')}
-            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-semibold transition-all ${
-              activeRole === 'faculty' 
-                ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/30' 
-                : 'text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            <BookOpen className="w-4 h-4" /> Faculty
-          </button>
-        </div>
-
         {/* Role Description */}
-        <div className={`p-3 rounded-lg mb-5 text-xs border ${
-          activeRole === 'faculty' 
-            ? 'bg-purple-500/5 border-purple-500/20 text-purple-300' 
-            : 'bg-blue-500/5 border-blue-500/20 text-blue-300'
-        }`}>
-          {activeRole === 'faculty' 
-            ? '🎓 Faculty accounts can create chapters, topics, tests, upload PDFs, generate quizzes, and view student reports.'
-            : '📚 Student accounts can read chapters, take tests & quizzes, track progress, and access preparation tools.'
-          }
+        <div className="p-3 rounded-lg mb-5 text-xs border bg-blue-500/5 border-blue-500/20 text-blue-300">
+          📚 Student accounts can read chapters, take tests & quizzes, track progress, and access preparation tools.
         </div>
 
         {error && <div className="bg-red-500/10 border border-red-500/30 text-red-300 p-3 rounded-lg mb-5 text-sm">{error}</div>}
@@ -150,7 +112,7 @@ export default function RegisterPage() {
               type="text" 
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder={activeRole === 'faculty' ? 'Dr. Jane Smith' : 'John Doe'}
+              placeholder="John Doe"
               className="w-full bg-slate-800/50 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 transition-all"
               required 
             />
@@ -163,7 +125,7 @@ export default function RegisterPage() {
               type="email" 
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder={activeRole === 'faculty' ? 'jane.smith@university.edu' : 'john.doe@university.edu'}
+              placeholder="john.doe@university.edu"
               className="w-full bg-slate-800/50 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 transition-all"
               required 
             />
@@ -183,13 +145,13 @@ export default function RegisterPage() {
             </div>
             <div>
               <label className="text-sm text-slate-300 mb-1 block font-medium">
-                {activeRole === 'faculty' ? 'Department' : 'Student ID'}
+                Student ID
               </label>
               <input 
                 type="text" 
-                value={activeRole === 'faculty' ? department : studentId}
-                onChange={(e) => activeRole === 'faculty' ? setDepartment(e.target.value) : setStudentId(e.target.value)}
-                placeholder={activeRole === 'faculty' ? 'e.g. Oral Pathology' : 'e.g. STD-2024-001'}
+                value={studentId}
+                onChange={(e) => setStudentId(e.target.value)}
+                placeholder="e.g. STD-2024-001"
                 className="w-full bg-slate-800/50 border border-slate-700 rounded-lg p-3 text-white text-sm focus:outline-none focus:border-blue-500 transition-all"
               />
             </div>
@@ -256,11 +218,7 @@ export default function RegisterPage() {
           
           <button 
             type="submit" 
-            className={`w-full py-3 rounded-lg font-semibold text-white flex items-center justify-center gap-2 transition-all mt-1 ${
-              activeRole === 'faculty' 
-                ? 'bg-purple-600 hover:bg-purple-700 shadow-lg shadow-purple-600/20' 
-                : 'bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-600/20'
-            }`}
+            className="w-full py-3 rounded-lg font-semibold text-white flex items-center justify-center gap-2 transition-all mt-1 bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-600/20"
             disabled={loading}
           >
             {loading ? (
@@ -271,7 +229,7 @@ export default function RegisterPage() {
             ) : (
               <>
                 <UserPlus className="w-4 h-4" />
-                Register as {activeRole === 'faculty' ? 'Faculty' : 'Student'}
+                Register as Student
               </>
             )}
           </button>
@@ -281,7 +239,7 @@ export default function RegisterPage() {
         <div className="mt-5 text-center">
           <p className="text-sm text-slate-400">
             Already have an account?{' '}
-            <Link href="/login" className={`font-semibold hover:underline ${activeRole === 'faculty' ? 'text-purple-400' : 'text-blue-400'}`}>
+            <Link href="/login" className="font-semibold hover:underline text-blue-400">
               Sign In
             </Link>
           </p>
