@@ -32,7 +32,15 @@ app.use(cors());
 app.use(express.json());
 
 // Serve uploaded files statically (for student PDF/DOCX downloads)
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+import fs from 'fs';
+
+// Ensure upload directories exist for Render
+const uploadsDir = path.join(__dirname, 'uploads');
+const topicsDir = path.join(uploadsDir, 'topics');
+if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir);
+if (!fs.existsSync(topicsDir)) fs.mkdirSync(topicsDir);
+
+app.use('/uploads', express.static(uploadsDir));
 
 import User from './models/User.js';
 
